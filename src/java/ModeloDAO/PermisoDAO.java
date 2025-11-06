@@ -5,10 +5,12 @@ import Interfaces.IPermisoDAO;
 import Modelo.Empleado;
 import Modelo.Permiso;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -62,10 +64,10 @@ public class PermisoDAO implements IPermisoDAO {
         }
         try (PreparedStatement ps = con.prepareStatement(SQL_INSERT, Statement.RETURN_GENERATED_KEYS)) {
             ps.setInt(1, permiso.getEmpleado().getId());
-            ps.setDate(2, permiso.getFechaPermiso());
-            ps.setTime(3, permiso.getHoraSalida());
-            ps.setDate(4, permiso.getFechaRetorno());
-            ps.setTime(5, permiso.getHoraRetorno());
+            ps.setDate(2, Date.valueOf(permiso.getFechaPermiso()));
+            ps.setTime(3, Time.valueOf(permiso.getHoraSalida()));
+            ps.setDate(4, Date.valueOf(permiso.getFechaRetorno()));
+            ps.setTime(5, Time.valueOf(permiso.getHoraRetorno()));
             ps.setString(6, permiso.getMotivo());
             int filas = ps.executeUpdate();
             if (filas > 0) {
@@ -221,10 +223,17 @@ public class PermisoDAO implements IPermisoDAO {
         empleado.setHorasAcumuladas(rs.getDouble("horas_acumuladas"));
         empleado.setReincidente(rs.getBoolean("reincidente"));
         permiso.setEmpleado(empleado);
-        permiso.setFechaPermiso(rs.getDate("fecha_permiso"));
-        permiso.setHoraSalida(rs.getTime("hora_salida"));
-        permiso.setFechaRetorno(rs.getDate("fecha_retorno"));
-        permiso.setHoraRetorno(rs.getTime("hora_retorno"));
+
+        Date fechaPermiso = rs.getDate("fecha_permiso");
+        Time horaSalida = rs.getTime("hora_salida");
+        Date fechaRetorno = rs.getDate("fecha_retorno");
+        Time horaRetorno = rs.getTime("hora_retorno");
+
+        permiso.setFechaPermiso(fechaPermiso != null ? fechaPermiso.toLocalDate() : null);
+        permiso.setHoraSalida(horaSalida != null ? horaSalida.toLocalTime() : null);
+        permiso.setFechaRetorno(fechaRetorno != null ? fechaRetorno.toLocalDate() : null);
+        permiso.setHoraRetorno(horaRetorno != null ? horaRetorno.toLocalTime() : null);
+
         permiso.setMotivo(rs.getString("motivo"));
         permiso.setEstado(rs.getString("estado"));
         permiso.setObservaciones(rs.getString("observaciones"));

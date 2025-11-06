@@ -71,8 +71,8 @@
                                 <small class="text-muted">Doc: <%= empleadoPermiso.getDocumento() %></small>
                             </td>
                             <td>
-                                <div><strong>Del</strong> <%= permiso.getFechaPermiso() %> <strong>al</strong> <%= permiso.getFechaRetorno() %></div>
-                                <div class="small text-muted">Salida <%= permiso.getHoraSalida() %> · Retorno <%= permiso.getHoraRetorno() %></div>
+                                <div><strong>Del</strong> <%= permiso.getFechaPermisoFormateada() %> <strong>al</strong> <%= permiso.getFechaRetornoFormateada() %></div>
+                                <div class="small text-muted">Salida <%= permiso.getHoraSalidaFormateada() %> · Retorno <%= permiso.getHoraRetornoFormateada() %></div>
                             </td>
                             <td><%= permiso.getMotivo() %></td>
                             <td class="text-center">

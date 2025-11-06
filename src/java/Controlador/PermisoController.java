@@ -7,9 +7,11 @@ import Modelo.Permiso;
 import ModeloDAO.EmpleadoDAO;
 import ModeloDAO.PermisoDAO;
 import java.io.IOException;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 import javax.servlet.RequestDispatcher;
 import javax.servlet.ServletException;
@@ -45,41 +47,18 @@ public class PermisoController extends HttpServlet {
             return;
         }
         switch (accion) {
-            case "login":
-                manejarLogin(request, response);
-                break;
-            case "logout":
-                manejarLogout(request, response);
-                break;
-            case "registrarPermiso":
-                manejarRegistroPermiso(request, response);
-                break;
-            case "listarMisPermisos":
-                mostrarPermisosEmpleado(request, response);
-                break;
-            case "listarPendientesArea":
-                mostrarPendientesJefeArea(request, response);
-                break;
-            case "aprobarArea":
-                manejarAprobacionArea(request, response);
-                break;
-            case "denegarArea":
-                manejarDenegacionArea(request, response);
-                break;
-            case "listarPendientesRRHH":
-                mostrarPendientesRRHH(request, response);
-                break;
-            case "aprobarRRHH":
-                manejarAprobacionRRHH(request, response);
-                break;
-            case "denegarRRHH":
-                manejarDenegacionRRHH(request, response);
-                break;
-            case "registrarEjecucion":
-                manejarRegistroEjecucion(request, response);
-                break;
-            default:
-                response.sendRedirect("login.jsp");
+            case "login" -> manejarLogin(request, response);
+            case "logout" -> manejarLogout(request, response);
+            case "registrarPermiso" -> manejarRegistroPermiso(request, response);
+            case "listarMisPermisos" -> mostrarPermisosEmpleado(request, response);
+            case "listarPendientesArea" -> mostrarPendientesJefeArea(request, response);
+            case "aprobarArea" -> manejarAprobacionArea(request, response);
+            case "denegarArea" -> manejarDenegacionArea(request, response);
+            case "listarPendientesRRHH" -> mostrarPendientesRRHH(request, response);
+            case "aprobarRRHH" -> manejarAprobacionRRHH(request, response);
+            case "denegarRRHH" -> manejarDenegacionRRHH(request, response);
+            case "registrarEjecucion" -> manejarRegistroEjecucion(request, response);
+            default -> response.sendRedirect("login.jsp");
         }
     }
 
@@ -114,34 +93,48 @@ public class PermisoController extends HttpServlet {
 
     private void manejarRegistroPermiso(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        Empleado empleado = session != null ? (Empleado) session.getAttribute("empleado") : null;
+        Empleado empleado = obtenerUsuarioSesion(request);
         if (empleado == null) {
             response.sendRedirect("login.jsp");
             return;
         }
         try {
+            LocalDate fechaPermiso = LocalDate.parse(request.getParameter("fechaPermiso"));
+            LocalTime horaSalida = LocalTime.parse(request.getParameter("horaSalida"));
+            LocalDate fechaRetorno = LocalDate.parse(request.getParameter("fechaRetorno"));
+            LocalTime horaRetorno = LocalTime.parse(request.getParameter("horaRetorno"));
+
+            validarRangoTemporal(fechaPermiso, horaSalida, fechaRetorno, horaRetorno);
+
             Permiso permiso = new Permiso();
             permiso.setEmpleado(empleado);
-            permiso.setFechaPermiso(Date.valueOf(request.getParameter("fechaPermiso")));
-            permiso.setHoraSalida(Time.valueOf(request.getParameter("horaSalida") + ":00"));
-            permiso.setFechaRetorno(Date.valueOf(request.getParameter("fechaRetorno")));
-            permiso.setHoraRetorno(Time.valueOf(request.getParameter("horaRetorno") + ":00"));
+            permiso.setFechaPermiso(fechaPermiso);
+            permiso.setHoraSalida(horaSalida);
+            permiso.setFechaRetorno(fechaRetorno);
+            permiso.setHoraRetorno(horaRetorno);
             permiso.setMotivo(request.getParameter("motivo"));
             permiso.setEstado("PENDIENTE_JEFE");
             permisoDAO.registrarPermiso(permiso);
             request.setAttribute("mensaje", "Permiso enviado correctamente");
             mostrarPermisosEmpleado(request, response);
-        } catch (IllegalArgumentException | SQLException ex) {
+        } catch (IllegalArgumentException | DateTimeParseException | SQLException ex) {
             request.setAttribute("mensaje", "Error al registrar el permiso: " + ex.getMessage());
             reenviar(request, response, "VistaEmpleado/formularioPermiso.jsp");
         }
     }
 
+    private void validarRangoTemporal(LocalDate fechaPermiso, LocalTime horaSalida,
+                                      LocalDate fechaRetorno, LocalTime horaRetorno) {
+        LocalDateTime inicio = LocalDateTime.of(fechaPermiso, horaSalida);
+        LocalDateTime fin = LocalDateTime.of(fechaRetorno, horaRetorno);
+        if (!fin.isAfter(inicio)) {
+            throw new IllegalArgumentException("La fecha y hora de retorno deben ser posteriores a la salida");
+        }
+    }
+
     private void mostrarPermisosEmpleado(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-        HttpSession session = request.getSession(false);
-        Empleado empleado = session != null ? (Empleado) session.getAttribute("empleado") : null;
+        Empleado empleado = obtenerUsuarioSesion(request);
         if (empleado == null) {
             response.sendRedirect("login.jsp");
             return;
@@ -293,6 +286,10 @@ public class PermisoController extends HttpServlet {
 
     private Empleado obtenerUsuarioSesion(HttpServletRequest request) {
         HttpSession session = request.getSession(false);
-        return session != null ? (Empleado) session.getAttribute("empleado") : null;
+        if (session == null) {
+            return null;
+        }
+        Object candidato = session.getAttribute("empleado");
+        return candidato instanceof Empleado empleado ? empleado : null;
     }
 }

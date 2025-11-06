@@ -1,15 +1,19 @@
 package Modelo;
 
-import java.sql.Date;
-import java.sql.Time;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 
 public class Permiso {
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter TIME_FORMATTER = DateTimeFormatter.ofPattern("HH:mm");
+
     private int id;
     private Empleado empleado;
-    private Date fechaPermiso;
-    private Time horaSalida;
-    private Date fechaRetorno;
-    private Time horaRetorno;
+    private LocalDate fechaPermiso;
+    private LocalTime horaSalida;
+    private LocalDate fechaRetorno;
+    private LocalTime horaRetorno;
     private String motivo;
     private String estado;
     private String observaciones;
@@ -20,8 +24,8 @@ public class Permiso {
     public Permiso() {
     }
 
-    public Permiso(int id, Empleado empleado, Date fechaPermiso, Time horaSalida, Date fechaRetorno,
-                   Time horaRetorno, String motivo, String estado, String observaciones,
+    public Permiso(int id, Empleado empleado, LocalDate fechaPermiso, LocalTime horaSalida, LocalDate fechaRetorno,
+                   LocalTime horaRetorno, String motivo, String estado, String observaciones,
                    boolean firmadoJefeArea, boolean firmadoRecursosHumanos, boolean marcadoReincidente) {
         this.id = id;
         this.empleado = empleado;
@@ -53,35 +57,35 @@ public class Permiso {
         this.empleado = empleado;
     }
 
-    public Date getFechaPermiso() {
+    public LocalDate getFechaPermiso() {
         return fechaPermiso;
     }
 
-    public void setFechaPermiso(Date fechaPermiso) {
+    public void setFechaPermiso(LocalDate fechaPermiso) {
         this.fechaPermiso = fechaPermiso;
     }
 
-    public Time getHoraSalida() {
+    public LocalTime getHoraSalida() {
         return horaSalida;
     }
 
-    public void setHoraSalida(Time horaSalida) {
+    public void setHoraSalida(LocalTime horaSalida) {
         this.horaSalida = horaSalida;
     }
 
-    public Date getFechaRetorno() {
+    public LocalDate getFechaRetorno() {
         return fechaRetorno;
     }
 
-    public void setFechaRetorno(Date fechaRetorno) {
+    public void setFechaRetorno(LocalDate fechaRetorno) {
         this.fechaRetorno = fechaRetorno;
     }
 
-    public Time getHoraRetorno() {
+    public LocalTime getHoraRetorno() {
         return horaRetorno;
     }
 
-    public void setHoraRetorno(Time horaRetorno) {
+    public void setHoraRetorno(LocalTime horaRetorno) {
         this.horaRetorno = horaRetorno;
     }
 
@@ -131,5 +135,21 @@ public class Permiso {
 
     public void setMarcadoReincidente(boolean marcadoReincidente) {
         this.marcadoReincidente = marcadoReincidente;
+    }
+
+    public String getFechaPermisoFormateada() {
+        return fechaPermiso != null ? fechaPermiso.format(DATE_FORMATTER) : "";
+    }
+
+    public String getFechaRetornoFormateada() {
+        return fechaRetorno != null ? fechaRetorno.format(DATE_FORMATTER) : "";
+    }
+
+    public String getHoraSalidaFormateada() {
+        return horaSalida != null ? horaSalida.format(TIME_FORMATTER) : "";
+    }
+
+    public String getHoraRetornoFormateada() {
+        return horaRetorno != null ? horaRetorno.format(TIME_FORMATTER) : "";
     }
 }

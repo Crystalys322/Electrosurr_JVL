@@ -73,12 +73,12 @@
                         %>
                         <tr>
                             <td>
-                                <span class="fw-semibold"><%= permiso.getFechaPermiso() %></span><br>
-                                <small class="text-muted">Regreso: <%= permiso.getFechaRetorno() %></small>
+                                <span class="fw-semibold"><%= permiso.getFechaPermisoFormateada() %></span><br>
+                                <small class="text-muted">Regreso: <%= permiso.getFechaRetornoFormateada() %></small>
                             </td>
                             <td>
-                                <span class="badge bg-light text-dark">Salida <%= permiso.getHoraSalida() %></span><br>
-                                <span class="badge bg-light text-dark mt-1">Retorno <%= permiso.getHoraRetorno() %></span>
+                                <span class="badge bg-light text-dark">Salida <%= permiso.getHoraSalidaFormateada() %></span><br>
+                                <span class="badge bg-light text-dark mt-1">Retorno <%= permiso.getHoraRetornoFormateada() %></span>
                             </td>
                             <td><%= permiso.getMotivo() %></td>
                             <td class="text-center">
