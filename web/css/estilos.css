@@ -1,0 +1,87 @@
+:root {
+    --brand-primary: #0056b3;
+    --brand-secondary: #00bcd4;
+    --brand-accent: #ffc107;
+}
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: linear-gradient(135deg, rgba(0, 86, 179, 0.08), rgba(0, 188, 212, 0.08));
+    min-height: 100vh;
+}
+
+.brand-navbar {
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-secondary));
+}
+
+.brand-navbar .navbar-brand,
+.brand-navbar .nav-link,
+.brand-navbar .navbar-text {
+    color: #ffffff !important;
+}
+
+.brand-card {
+    border: none;
+    box-shadow: 0 0.75rem 2rem rgba(0, 0, 0, 0.08);
+    border-radius: 1rem;
+}
+
+.brand-section-title {
+    font-weight: 600;
+    color: var(--brand-primary);
+    letter-spacing: 0.03em;
+}
+
+.badge-status {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+.badge-status.aprobado {
+    background-color: rgba(25, 135, 84, 0.15);
+    color: #198754;
+}
+
+.badge-status.pendiente {
+    background-color: rgba(255, 193, 7, 0.15);
+    color: #ffc107;
+}
+
+.badge-status.denegado {
+    background-color: rgba(220, 53, 69, 0.15);
+    color: #dc3545;
+}
+
+.table thead th {
+    background-color: rgba(0, 86, 179, 0.1);
+    color: var(--brand-primary);
+    border-bottom: none;
+}
+
+.table-rounded {
+    border-radius: 0.75rem;
+    overflow: hidden;
+}
+
+textarea.form-control {
+    min-height: 120px;
+}
+
+.shadow-soft {
+    box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.08);
+}
+
+.link-muted {
+    color: rgba(0, 0, 0, 0.55);
+    text-decoration: none;
+}
+
+.link-muted:hover {
+    color: var(--brand-primary);
+}
+
+.alert-brand {
+    border-left: 5px solid var(--brand-secondary);
+    background-color: rgba(0, 188, 212, 0.15);
+    color: #0a4f6a;
+}
